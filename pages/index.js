@@ -40,7 +40,7 @@ export default function Home() {
       fontFamily: 'sans-serif',
       textAlign: 'center'
     }}>
-      <h1 style={{ fontSize: '2.5rem' }}>🎰 Слот-машина</h1>
+      <h1 style={{ fontSize: '2.5rem' }}>🎰 Испытай удачу</h1>
       <div style={{
         display: 'flex',
         fontSize: '4rem',
