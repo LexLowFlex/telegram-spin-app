@@ -1,12 +1,12 @@
 import { useState } from 'react';
+import confetti from 'canvas-confetti';
 
 export default function Home() {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState(null);
-  const [hasWon, setHasWon] = useState(false);
+  const [slots, setSlots] = useState(['🍒', '🍋', '💎']);
 
   const symbols = ['🍒', '🍋', '💎'];
-  const [slots, setSlots] = useState(['🍒', '🍋', '💎']);
 
   const spin = () => {
     setSpinning(true);
@@ -25,29 +25,51 @@ export default function Home() {
       setSlots(['💎', '💎', '💎']);
       setSpinning(false);
       setResult('Поздравляем! Вы выиграли 7777₽');
-      setHasWon(true);
+
+      // Конфетти 🎉
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 },
+      });
     }, 2000);
   };
+
+  const hasWon = result !== null;
 
   return (
     <div
       style={{
-        backgroundColor: '#7a5ef8',
-        minHeight: '100vh',
+        background: '#7A5FFF',
+        height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         color: '#fff',
-        fontFamily: 'sans-serif',
+        fontFamily: 'Arial, sans-serif',
         textAlign: 'center',
+        padding: '1rem',
       }}
     >
-      <h1>🎰 Испытай удачу</h1>
+      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🎰 Испытай удачу</h1>
 
-      <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+      <div
+        style={{
+          display: 'flex',
+          fontSize: '4rem',
+          background: '#fff',
+          padding: '1rem 2rem',
+          borderRadius: '10px',
+          marginBottom: '1.5rem',
+          color: '#000',
+        }}
+      >
         {slots.map((s, i) => (
-          <span key={i}>{s}</span>
+          <span key={i} style={{ margin: '0 0.5rem' }}>
+            {s}
+            {i < slots.length - 1 && <span style={{ margin: '0 0.5rem' }}>|</span>}
+          </span>
         ))}
       </div>
 
@@ -70,19 +92,19 @@ export default function Home() {
         </button>
       )}
 
-      {result && (
+      {hasWon && (
         <>
-          <p style={{ fontSize: '1.5rem' }}>{result}</p>
+          <p style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{result}</p>
           <button
+            onClick={() => window.open('https://partredivada.com/?promo=d4c4edc2-ca8c-4938-8db4-e976a26b68a2', '_blank')}
             style={{
-              fontSize: '1.2rem',
+              fontSize: '1.5rem',
               padding: '1rem 2rem',
               background: '#fff',
               color: '#5e3eff',
               border: 'none',
               borderRadius: '10px',
               cursor: 'pointer',
-              marginTop: '1rem',
             }}
           >
             Забрать выигрыш
