@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import confetti from 'canvas-confetti';
 
-export default function Home() {
-  const [spinning, setSpinning] = useState(false);
-  const [result, setResult] = useState(null);
-  const [slots, setSlots] = useState(['🍒', '🍋', '💎']);
+const symbols = ['🍒', '🍋', '🍊', '🍉', '⭐', '🔔', '💎'];
 
-  const symbols = ['🍒', '🍋', '💎'];
+export default function Home() {
+  const [slots, setSlots] = useState(['', '', '']);
+  const [spinning, setSpinning] = useState(false);
+  const [hasWon, setHasWon] = useState(false);
+  const [showPrize, setShowPrize] = useState(false);
 
   const spin = () => {
     setSpinning(true);
-    setResult(null);
+    setHasWon(false);
+    setShowPrize(false);
 
-    const spinInterval = setInterval(() => {
+    const interval = setInterval(() => {
       setSlots([
         symbols[Math.floor(Math.random() * symbols.length)],
         symbols[Math.floor(Math.random() * symbols.length)],
@@ -21,95 +23,77 @@ export default function Home() {
     }, 100);
 
     setTimeout(() => {
-      clearInterval(spinInterval);
-      setSlots(['💎', '💎', '💎']);
+      clearInterval(interval);
+      setSlots(['7️⃣', '7️⃣', '7️⃣']);
       setSpinning(false);
-      setResult('Поздравляем! Вы выиграли 7777₽');
+      setHasWon(true);
+      setShowPrize(true);
 
-      // Конфетти 🎉
       confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 },
+        particleCount: 200,
+        spread: 100,
+        origin: { y: 0.6 }
       });
     }, 2000);
   };
 
-  const hasWon = result !== null;
+  const containerStyle = {
+    fontFamily: 'Arial, sans-serif',
+    background: 'white',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+  };
+
+  const slotStyle = {
+    fontSize: '4rem',
+    margin: '0 0.5rem',
+    padding: '0.5rem 1rem',
+    border: '2px solid #888',
+    borderRadius: '8px',
+    background: '#f0f0f0',
+  };
+
+  const prizeBoxStyle = {
+    marginTop: '2rem',
+    padding: '1.5rem',
+    backgroundColor: '#e0ffe0',
+    borderRadius: '10px',
+    border: '2px solid #00aa00',
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+  };
 
   return (
-    <div
-      style={{
-        background: '#7A5FFF',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-        fontFamily: 'Arial, sans-serif',
-        textAlign: 'center',
-        padding: '1rem',
-      }}
-    >
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🎰 Испытай удачу</h1>
-
-      <div
-        style={{
-          display: 'flex',
-          fontSize: '4rem',
-          background: '#fff',
-          padding: '1rem 2rem',
-          borderRadius: '10px',
-          marginBottom: '1.5rem',
-          color: '#000',
-        }}
-      >
+    <div style={containerStyle}>
+      <h1>Слот-машина 🎰</h1>
+      <div style={{ display: 'flex', margin: '1rem 0' }}>
         {slots.map((s, i) => (
-          <span key={i} style={{ margin: '0 0.5rem' }}>
-            {s}
-            {i < slots.length - 1 && <span style={{ margin: '0 0.5rem' }}>|</span>}
-          </span>
+          <div key={i} style={slotStyle}>{s}</div>
         ))}
       </div>
 
       {!hasWon && (
-        <button
-          onClick={spin}
-          disabled={spinning}
-          style={{
-            fontSize: '1.5rem',
-            padding: '1rem 2rem',
-            background: '#fff',
-            color: '#5e3eff',
-            border: 'none',
-            borderRadius: '10px',
-            cursor: 'pointer',
-            marginBottom: '1rem',
-          }}
-        >
+        <button onClick={spin} disabled={spinning} style={{ fontSize: '1.2rem', padding: '0.5rem 1rem' }}>
           {spinning ? 'Крутится...' : '🎯 Крутить'}
         </button>
       )}
 
-      {hasWon && (
-        <>
-          <p style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{result}</p>
-          <button
-            onClick={() => window.open('https://partredivada.com/?promo=d4c4edc2-ca8c-4938-8db4-e976a26b68a2', '_blank')}
-            style={{
-              fontSize: '1.5rem',
-              padding: '1rem 2rem',
-              background: '#fff',
-              color: '#5e3eff',
-              border: 'none',
-              borderRadius: '10px',
-              cursor: 'pointer',
-            }}
-          >
-            Забрать выигрыш
-          </button>
-        </>
+      {showPrize && (
+        <div style={prizeBoxStyle}>
+          🎉 Поздравляем! Вы выиграли <strong>7777₽</strong>
+          <div>
+            <button
+              onClick={() => window.open('https://partredivada.com/?promo=d4c4edc2-ca8c-4938-8db4-e976a26b68a2', '_blank')}
+              style={{ marginTop: '1rem', padding: '0.5rem 1rem', fontSize: '1rem' }}
+            >
+              Забрать выигрыш
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
